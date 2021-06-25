@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import SetFormContext from '../../Context/SetFormContext';
+import FormContext from '../../Context/FormContext';
 // import FormContext from '../../Context/FormContext';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -9,7 +9,9 @@ import * as Yup from 'yup';
 
 const Name = ({ onNext }) => {
 
-  const setFormData = useContext(SetFormContext);
+  const {values,setters} = useContext(FormContext);
+  const {formData} = values;
+  const {setFormData} = setters;
   const [birthDate, setBirthDate] = useState(new Date());
 
   const FullNameSchema = Yup.object().shape({
@@ -25,20 +27,19 @@ const Name = ({ onNext }) => {
 
   const handlClick = (data) => {
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       firstName: data.firstName,
       lastName: data.lastName,
       birthdate: data.birthdate
-    }))
-    console.log(data)
+    })
     onNext();
   }
 
   return (
     <div>
       <Formik
-        initialValues={{ firstName: "", lastName: "", birthdate: birthDate }}
+        initialValues={{ firstName: formData.firstName , lastName: formData.lastName, birthdate: birthDate }}
         validationSchema={FullNameSchema}
         onSubmit={data => handlClick(data)}>
         {({ errors, touched }) => (

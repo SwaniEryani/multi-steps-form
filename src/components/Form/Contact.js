@@ -1,35 +1,35 @@
 import React, { useContext } from 'react'
-import SetFormContext from '../../Context/SetFormContext'
+import FormContext from '../../Context/FormContext'
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 
 function Contact({ onNext, onBack }) {
 
-  const setFormData = useContext(SetFormContext);
+  const {values,setters} = useContext(FormContext);
+  const {formData} = values;
+  const {setFormData} = setters;
 
   const ContactSchema = Yup.object().shape({
     phone: Yup.number()
-      .min(9, 'Too Short!')
-      .max(9, 'Too Long!')
       .required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
   });
 
   const handlClick = (data) => {
     console.log(data.birthdate)
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       email: data.email,
       phone: data.phone
-    }))
+    })
     onNext();
   }
 
   return (
     <div>
       <Formik
-        initialValues={{ email: "", phone: "" }}
+        initialValues={{ email: formData.email, phone: formData.phone }}
         validationSchema={ContactSchema}
         onSubmit={data => handlClick(data)}>
         {({ errors, touched }) => (

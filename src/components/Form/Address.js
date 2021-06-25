@@ -1,19 +1,21 @@
 import React, { useContext } from 'react';
-import SetFormContext from '../../Context/SetFormContext'
+import FormContext from '../../Context/FormContext'
 import { Formik, Form, Field } from 'formik';
 
 function Address({ onNext, onBack }) {
 
-  const setFormData = useContext(SetFormContext);
+  const {values,setters} = useContext(FormContext);
+  const {formData} = values;
+  const {setFormData} = setters;
 
   const handlClick = (data) => {
     console.log(data.birthdate)
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       city: data.city,
       province: data.province,
       country: data.country
-    }))
+    })
     onNext();
   }
 
@@ -21,7 +23,7 @@ function Address({ onNext, onBack }) {
   return (
     <div>
       <Formik
-        initialValues={{ city: "", province: "", country: "" }}
+        initialValues={{ city: formData.city, province: formData.province, country: formData.country }}
         onSubmit={data => handlClick(data)}>
         {() => (
           <Form >
